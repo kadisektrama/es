@@ -16,7 +16,7 @@ export const Map = () => {
   return (
     <div>
       <div className={styles["map__header"]}>
-        <h2>Map</h2>
+        <h2>Карта</h2>
       </div>
 
       <div style={{ height: "700px" }}>

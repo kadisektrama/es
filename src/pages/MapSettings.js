@@ -32,17 +32,19 @@ export const MapSettings = () => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Название",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Type",
-      dataIndex: "type",
+      title: "Тип",
       key: "type",
+      render: (_, record) => (
+        <span>{record.type === "point" ? "Точка" : "Линия"}</span>
+      ),
     },
     {
-      title: "Action",
+      title: "Действия",
       key: "actions",
       render: (_, record) => (
         <Space size="middle">
@@ -53,18 +55,18 @@ export const MapSettings = () => {
               setModalWindowOpen("update");
             }}
           >
-            Edit
+            Редактировать
           </span>
 
           <Popconfirm
             placement="top"
-            title={"Deleting"}
-            description={"Are you sure that you want to delete book?"}
+            title={"Удаление"}
+            description={"Вы уверены, что хотите удалить объект?"}
             onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
+            okText="Да"
+            cancelText="Нет"
           >
-            <span className={styles.table__link}>Delete</span>
+            <span className={styles.table__link}>Удалить</span>
           </Popconfirm>
         </Space>
       ),
@@ -75,25 +77,27 @@ export const MapSettings = () => {
     <>
       <div className="map-settings">
         <div className={styles["map-settings__header"]}>
-          <h2>Map Settings</h2>
+          <h2>Настройки карты</h2>
           <Button type="primary" onClick={() => setModalWindowOpen("create")}>
-            Add
+            Создать
           </Button>
         </div>
         <Table dataSource={localStorageValue} columns={columns} rowKey="id" />
       </div>
-      <Modal
-        open={modalWindowOpen === "create"}
-        title="Сreating a map object"
-        onCancel={() => {
-          setModalWindowOpen(false);
-          setData(false);
-        }}
-        footer={null}
-        width={800}
-      >
-        <MapObject create={handleCreate} />
-      </Modal>
+      {modalWindowOpen === "create" && (
+        <Modal
+          open
+          title="Сreating a map object"
+          onCancel={() => {
+            setModalWindowOpen(false);
+            setData(false);
+          }}
+          footer={null}
+          width={800}
+        >
+          <MapObject create={handleCreate} />
+        </Modal>
+      )}
 
       {modalWindowOpen === "update" && (
         <Modal

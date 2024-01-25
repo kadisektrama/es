@@ -92,21 +92,21 @@ export const MapObject = (props) => {
       autoComplete="off"
     >
       <Form.Item
-        label="Name"
+        label="Название"
         name="name"
         rules={[
           {
             required: true,
-            message: "Please input name!",
+            message: "Введите название объекта!",
           },
         ]}
       >
-        <Input />
+        <Input placeholder="Название объекта" />
       </Form.Item>
 
-      <Form.Item name="type" label="Type" rules={[{ required: true }]}>
+      <Form.Item name="type" label="Тип" rules={[{ required: true }]}>
         <Select
-          placeholder="Select a type of object"
+          placeholder="Выберите тип объекта!"
           allowClear
           onChange={handleUnsetType}
         >
@@ -116,12 +116,12 @@ export const MapObject = (props) => {
       </Form.Item>
 
       <Form.Item
-        label="Map"
+        label="Карта"
         name="map"
         rules={[
           {
             required: true,
-            message: "Please draw/choose object!",
+            message: "Выберите объект на карте!",
           },
         ]}
       >

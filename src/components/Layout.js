@@ -3,8 +3,8 @@ import { Outlet } from "react-router";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
+  GlobalOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, Button, theme } from "antd";
 import { Link, useLocation } from "react-router-dom";
@@ -27,17 +27,17 @@ const AppLayout = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={[pathname]}
+          selectedKeys={[pathname]}
           items={[
             {
               key: "/map",
-              icon: <UserOutlined />,
-              label: <Link to="/map">Map</Link>,
+              icon: <GlobalOutlined />,
+              label: <Link to="/map">Карта</Link>,
             },
             {
               key: "/map-settings",
-              icon: <VideoCameraOutlined />,
-              label: <Link to="/map-settings">Map Settings</Link>,
+              icon: <SettingOutlined />,
+              label: <Link to="/map-settings">Настройка карты</Link>,
             },
           ]}
         />
