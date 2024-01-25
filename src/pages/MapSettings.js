@@ -1,34 +1,34 @@
 import { Table, Space, Popconfirm, Button, Modal } from "antd";
 import styles from "./MapSettings.module.scss";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MapObject } from "../components/forms/MapObject";
+import { useLocalStorage } from "../shared/hooks/localStorage";
+import "leaflet/dist/leaflet.css";
+import "leaflet-draw/dist/leaflet.draw.css";
 
 export const MapSettings = () => {
   const [modalWindowOpen, setModalWindowOpen] = useState(false);
-  const handleDelete = (id) => {
-    //localStorage.deleteProduct(id)
-    //dispatch(fetchProducts(Object.fromEntries(searchParams.entries() || [])))
+  const [data, setData] = useState(false);
+  const [
+    localStorageValue,
+    createLocalStorageValue,
+    updateLocalStorageValue,
+    deleteLocalStorageValue,
+  ] = useLocalStorage("mapObject");
+
+  const handleCreate = (values) => {
+    createLocalStorageValue(values);
+    setModalWindowOpen(false);
   };
 
-  useEffect(() => {}, []);
-  // point, line
-  const dataSource = [
-    {
-      key: "1",
-      name: "Single line",
-      type: "line",
-    },
-    {
-      key: "2",
-      name: "Double line",
-      type: "line",
-    },
-    {
-      key: "3",
-      name: "Moskow",
-      type: "point",
-    },
-  ];
+  const handleUpdate = (values) => {
+    updateLocalStorageValue(values);
+    setModalWindowOpen(false);
+  };
+
+  const handleDelete = (id) => {
+    deleteLocalStorageValue(id);
+  };
 
   const columns = [
     {
@@ -46,7 +46,15 @@ export const MapSettings = () => {
       key: "actions",
       render: (_, record) => (
         <Space size="middle">
-          <a onClick={() => setModalWindowOpen(true)}>Edit</a>
+          <span
+            className={styles.table__link}
+            onClick={() => {
+              setData(record);
+              setModalWindowOpen("update");
+            }}
+          >
+            Edit
+          </span>
 
           <Popconfirm
             placement="top"
@@ -56,7 +64,7 @@ export const MapSettings = () => {
             okText="Yes"
             cancelText="No"
           >
-            <a>Delete</a>
+            <span className={styles.table__link}>Delete</span>
           </Popconfirm>
         </Space>
       ),
@@ -64,23 +72,38 @@ export const MapSettings = () => {
   ];
 
   return (
-    <div className="map-settings">
-      <div className={styles["map-settings__header"]}>
-        <h2>Map Settings</h2>
-        <Button type="primary" onClick={() => setModalWindowOpen(true)}>
-          Add
-        </Button>
+    <>
+      <div className="map-settings">
+        <div className={styles["map-settings__header"]}>
+          <h2>Map Settings</h2>
+          <Button type="primary" onClick={() => setModalWindowOpen("create")}>
+            Add
+          </Button>
+        </div>
+        <Table dataSource={localStorageValue} columns={columns} rowKey="id" />;
       </div>
-      <Table dataSource={dataSource} columns={columns} />;
+
       <Modal
-        open={modalWindowOpen}
+        open={modalWindowOpen === "create"}
         title="Сreating a map object"
         onOk={() => setModalWindowOpen(false)}
         onCancel={() => setModalWindowOpen(false)}
         footer={null}
+        width={800}
       >
-        <MapObject />
+        <MapObject create={handleCreate} />
       </Modal>
-    </div>
+
+      <Modal
+        open={modalWindowOpen === "update"}
+        title="Updating a map object"
+        onOk={() => setModalWindowOpen(false)}
+        onCancel={() => setModalWindowOpen(false)}
+        footer={null}
+        width={800}
+      >
+        {data && <MapObject update={handleUpdate} defaultValues={data} />}
+      </Modal>
+    </>
   );
 };
