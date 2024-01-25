@@ -1,33 +1,40 @@
 import { Button, Form, Input, Select } from "antd";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import "leaflet-draw/dist/leaflet.draw.css";
+import L from "leaflet";
 
 const { Option } = Select;
+
 export const MapObject = (props) => {
   const [form] = Form.useForm();
   const typeForm = Form.useWatch("type", form);
   const mapRef = useRef();
-  let { current } = useRef();
+  let layerRef = useRef();
 
   useEffect(() => {
-    unsetType();
-  }, [typeForm]);
-
-  const unsetType = useCallback(() => {
     form.setFieldsValue({
       ...props?.defaultValues,
-      map: null,
     });
 
-    const drawnItems = mapRef.current?._layers;
-    current && mapRef.current.removeLayer(drawnItems[current]);
-  }, [current]);
+    return () => {
+      mapRef.current &&
+        layerRef.current &&
+        mapRef.current.removeLayer(mapRef.current._layers[layerRef.current]);
+    };
+  }, []);
 
   useEffect(() => {
-    form.setFieldsValue({ ...props?.defaultValues });
-  }, [props?.defaultValues?.id, form]);
+    if (mapRef.current && props?.defaultValues?.map) {
+      let object =
+        props.defaultValues.type === "point"
+          ? new L.Marker(props.defaultValues.map)
+          : new L.Polyline(props.defaultValues.map);
+      mapRef.current.addLayer(object);
+      layerRef.current = { ...object }._leaflet_id;
+    }
+  }, [mapRef.current]);
 
   const onFinish = (values) => {
     props?.defaultValues
@@ -41,21 +48,28 @@ export const MapObject = (props) => {
 
   const onCreate = (e) => {
     const drawnItems = mapRef.current._layers;
-    const layer = drawnItems[e.layer._leaflet_id];
+    const currentLayer = drawnItems[e.layer._leaflet_id];
 
     form.setFieldsValue({
-      ...props?.defaultValues,
       map:
         e.layerType === "polyline"
-          ? layer._latlngs.map((o) => Object.values(o))
-          : Object.values(layer._latlng),
+          ? currentLayer._latlngs.map((o) => Object.values(o))
+          : Object.values(currentLayer._latlng),
     });
 
-    current &&
-      drawnItems[current] &&
-      mapRef.current.removeLayer(drawnItems[current]);
+    layerRef.current &&
+      mapRef.current.removeLayer(drawnItems[layerRef.current]);
+    layerRef.current = e.layer._leaflet_id;
+  };
 
-    current = e.layer._leaflet_id;
+  const handleUnsetType = () => {
+    form.setFieldsValue({
+      map: null,
+    });
+
+    layerRef.current &&
+      mapRef.current.removeLayer(mapRef.current._layers[layerRef.current]);
+    layerRef.current = null;
   };
 
   return (
@@ -91,7 +105,11 @@ export const MapObject = (props) => {
       </Form.Item>
 
       <Form.Item name="type" label="Type" rules={[{ required: true }]}>
-        <Select placeholder="Select a type of object" allowClear>
+        <Select
+          placeholder="Select a type of object"
+          allowClear
+          onChange={handleUnsetType}
+        >
           <Option value="point">point</Option>
           <Option value="line">line</Option>
         </Select>

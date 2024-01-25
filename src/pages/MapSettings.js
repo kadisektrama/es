@@ -80,30 +80,35 @@ export const MapSettings = () => {
             Add
           </Button>
         </div>
-        <Table dataSource={localStorageValue} columns={columns} rowKey="id" />;
+        <Table dataSource={localStorageValue} columns={columns} rowKey="id" />
       </div>
-
       <Modal
         open={modalWindowOpen === "create"}
         title="Сreating a map object"
-        onOk={() => setModalWindowOpen(false)}
-        onCancel={() => setModalWindowOpen(false)}
+        onCancel={() => {
+          setModalWindowOpen(false);
+          setData(false);
+        }}
         footer={null}
         width={800}
       >
         <MapObject create={handleCreate} />
       </Modal>
 
-      <Modal
-        open={modalWindowOpen === "update"}
-        title="Updating a map object"
-        onOk={() => setModalWindowOpen(false)}
-        onCancel={() => setModalWindowOpen(false)}
-        footer={null}
-        width={800}
-      >
-        {data && <MapObject update={handleUpdate} defaultValues={data} />}
-      </Modal>
+      {modalWindowOpen === "update" && (
+        <Modal
+          open
+          title="Updating a map object"
+          onCancel={() => {
+            setModalWindowOpen(false);
+            setData(false);
+          }}
+          footer={null}
+          width={800}
+        >
+          <MapObject update={handleUpdate} defaultValues={data} />
+        </Modal>
+      )}
     </>
   );
 };
