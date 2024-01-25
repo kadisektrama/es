@@ -8,7 +8,7 @@ import {
 import { useLocalStorage } from "../shared/hooks/localStorage";
 
 import styles from "./Map.module.scss";
-import "leaflet-draw/dist/leaflet.draw.css";
+//import "leaflet-draw/dist/leaflet.draw.css";
 
 export const Map = () => {
   const [localStorageValue] = useLocalStorage("mapObject");

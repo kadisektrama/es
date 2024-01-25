@@ -3,8 +3,8 @@ import styles from "./MapSettings.module.scss";
 import { useState } from "react";
 import { MapObject } from "../components/forms/MapObject";
 import { useLocalStorage } from "../shared/hooks/localStorage";
-import "leaflet/dist/leaflet.css";
-import "leaflet-draw/dist/leaflet.draw.css";
+//import "leaflet/dist/leaflet.css";
+//import "leaflet-draw/dist/leaflet.draw.css";
 
 export const MapSettings = () => {
   const [modalWindowOpen, setModalWindowOpen] = useState(false);
