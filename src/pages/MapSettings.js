@@ -87,7 +87,7 @@ export const MapSettings = () => {
       {modalWindowOpen === "create" && (
         <Modal
           open
-          title="Сreating a map object"
+          title="Создание нового объекта"
           onCancel={() => {
             setModalWindowOpen(false);
             setData(false);
@@ -102,7 +102,7 @@ export const MapSettings = () => {
       {modalWindowOpen === "update" && (
         <Modal
           open
-          title="Updating a map object"
+          title="Редактирование объекта"
           onCancel={() => {
             setModalWindowOpen(false);
             setData(false);
